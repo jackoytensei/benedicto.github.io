@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | Hernane Benedicto</title>
+<meta name="description" content="Open a ticket or reach out directly — email, phone and location for Hernane O. Benedicto Jr., IT Specialist.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="nav" aria-label="Primary">
+  <div class="wrap">
+    <a class="nav-brand" href="index.html">
+      <strong>H. BENEDICTO JR.</strong>
+      <em>IT Specialist</em>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html" aria-current="page">Contact</a></li>
+    </ul>
+    <div class="nav-status">
+      <span class="dot" aria-hidden="true"></span> System Status: Online
+    </div>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<header class="section--ink grid-bg">
+  <div class="wrap">
+    <div class="title-block">
+      <span><b>Ref:</b>HB—2024</span>
+      <span><b>Doc:</b>Contact / Rev. 01</span>
+      <span><b>Section:</b>03 of 03</span>
+    </div>
+    <div style="padding: var(--sp-5) 0;">
+      <p class="eyebrow">Contact</p>
+      <h1 class="h-display" style="font-size:clamp(2.2rem,5vw,3.4rem); color:var(--paper-text);">Open a ticket.</h1>
+      <p class="hero-copy" style="margin-top:var(--sp-2);">Have a role, a project, or a system that needs attention? Send the details below — or reach out directly.</p>
+    </div>
+  </div>
+</header>
+
+<section class="section section--paper reveal">
+  <div class="wrap ticket-shell">
+
+    <div class="ticket">
+      <div class="ticket-head">
+        <span class="tag">New Ticket</span>
+        <span class="tag">Priority: Normal</span>
+      </div>
+
+      <form id="ticket-form" novalidate>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-name">Name</label>
+            <input type="text" id="f-name" name="name" placeholder="Juan Dela Cruz" required>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input type="email" id="f-email" name="email" placeholder="you@company.com" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-type">Ticket type</label>
+          <select id="f-type" name="type">
+            <option>General Inquiry</option>
+            <option>Job Opportunity</option>
+            <option>Project / Freelance</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="f-message">Message</label>
+          <textarea id="f-message" name="message" placeholder="Tell me a bit about the role or the problem you're solving..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--block">Submit ticket →</button>
+        <p class="ticket-note">Submitting opens your email client with this message pre-filled, addressed to benedictojack2@gmail.com. Nothing is sent automatically.</p>
+
+        <div class="confirm" id="ticket-confirm">
+          <span class="confirm-id"></span>
+          Your email client should now be open with the message ready to send. Prefer a direct line? Use the channels alongside this form.
+        </div>
+      </form>
+    </div>
+
+    <div class="channels">
+      <div class="channel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        <div>
+          <span class="ch-label">Email</span>
+          <a class="ch-value" href="mailto:benedictojack2@gmail.com">benedictojack2@gmail.com</a>
+        </div>
+      </div>
+      <div class="channel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <div>
+          <span class="ch-label">Phone</span>
+          <a class="ch-value" href="tel:+639659922905">+63 965 992 2905</a>
+        </div>
+      </div>
+      <div class="channel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div>
+          <span class="ch-label">Location</span>
+          <span class="ch-value">Koronadal City, South Cotabato, Philippines</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer section--ink">
+  <div class="wrap">
+    <div class="footer-top">
+      <span class="footer-brand">Hernane O. Benedicto Jr.</span>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="mailto:benedictojack2@gmail.com">Email</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 Hernane Benedicto · Koronadal City, South Cotabato, PH</span>
+      <span>6.30°N, 124.51°E | approx.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
