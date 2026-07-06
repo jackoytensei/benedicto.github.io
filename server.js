@@ -1,7 +1,21 @@
+require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
+const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(express.json({ limit: '1mb' }));
+// Allow cross-origin requests (used when pages are opened via file:// or served from a different origin)
+app.use(cors());
+
+// Gracefully handle invalid JSON bodies (prevent noisy stack traces)
+app.use((err, req, res, next) => {
+  if (err && err.type === 'entity.parse.failed') {
+    console.warn('[server] invalid JSON body received');
+    return res.status(400).json({ error: 'Invalid JSON' });
+  }
+  next(err);
+});
 
 // Resume link (what the assistant will provide)
 const RESUME_URL = 'https://drive.google.com/file/d/1QHeOzaz6ILZLbsGDuOQDcr417P6-wU-v/view?usp=sharing';
@@ -196,6 +210,53 @@ Behavior rules:
   } catch (err) {
     console.error('[api/chat] OpenRouter error:', err);
     return res.status(500).json({ reply: 'Sorry—AI generation failed on the server.' });
+  }
+});
+
+// Ticket endpoint: accepts ticket submissions and attempts to send via SMTP
+app.post('/api/ticket', async (req, res) => {
+  const { name, email, type, message } = req.body || {};
+  if (!name || !email || !message) return res.status(400).json({ error: 'Missing fields' });
+
+  // Basic ticket id
+  const ticketId = 'HB-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(100 + Math.random() * 900);
+
+  // Read SMTP configuration from env
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpPort = process.env.SMTP_PORT || 587;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const smtpSecure = (process.env.SMTP_SECURE === 'true');
+
+  if (!smtpHost || !smtpUser || !smtpPass) {
+    // Not configured: tell the client to fallback to mailto so the user can send manually
+    return res.status(501).json({ error: 'SMTP not configured' });
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: Number(smtpPort),
+      secure: smtpSecure,
+      auth: { user: smtpUser, pass: smtpPass }
+    });
+
+    const subject = `[${type}] Message from ${name} — ${ticketId}`;
+    const text = `${message}\n\n—\nFrom: ${name}\nReply to: ${email}\nTicket ref: ${ticketId}`;
+
+    const mailOptions = {
+      from: `${smtpUser}`,
+      to: 'benedictojack2@gmail.com',
+      replyTo: email,
+      subject,
+      text
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return res.json({ success: true, info, ticketId });
+  } catch (err) {
+    console.error('[api/ticket] sendMail error:', err);
+    return res.status(500).json({ error: 'Failed to send ticket' });
   }
 });
 
