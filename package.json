@@ -8,11 +8,12 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
     "@openrouter/sdk": "^0.13.24",
-    "cors": "^2.8.5",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
     "express-rate-limit": "^7.4.0",
-    "helmet": "^7.1.0"
+    "helmet": "^7.1.0",
+    "nodemailer": "^6.10.1"
   }
 }
-
