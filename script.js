@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---- AI chat widget ---- */
   const CHAT = {
-    apiEndpoint: 'http://localhost:3000/api/chat', // backend endpoint
+    // Prefer same-origin API when the page is served over http(s).
+    apiEndpoint: (window.location.protocol === 'http:' || window.location.protocol === 'https:') ? `${window.location.origin}/api/chat` : 'http://localhost:3000/api/chat',
     maxChars: 1200
   };
 
@@ -192,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---- contact / ticket form ---- */
   const form = document.getElementById('ticket-form');
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const name = form.querySelector('#f-name').value.trim();
@@ -205,19 +206,54 @@ document.addEventListener('DOMContentLoaded', () => {
       const ticketId = 'HB-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(100 + Math.random() * 900);
 
       const subject = encodeURIComponent(`[${type}] Message from ${name}`);
-      const body = encodeURIComponent(
-        `${message}\n\n—\nFrom: ${name}\nReply to: ${email}\nTicket ref: ${ticketId}`
-      );
+      const bodyText = `${message}\n\n—\nFrom: ${name}\nReply to: ${email}\nTicket ref: ${ticketId}`;
+      const body = encodeURIComponent(bodyText);
       const mailto = `mailto:benedictojack2@gmail.com?subject=${subject}&body=${body}`;
 
       const confirmBox = document.getElementById('ticket-confirm');
-      if (confirmBox) {
-        confirmBox.querySelector('.confirm-id').textContent = `Ticket #${ticketId} — ready to send`;
-        confirmBox.classList.add('is-visible');
-      }
 
-      // Use href for wider compatibility with different browsers/versions.
-      window.location.assign(mailto);
+      // Try sending to server endpoint first. If SMTP is not configured on server,
+      // the server will respond with 501 and we fallback to opening the user's mail client.
+      try {
+        const res = await fetch('/api/ticket', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, type, message })
+        });
+
+        if (res.ok) {
+          const data = await res.json().catch(() => ({}));
+          if (confirmBox) {
+            confirmBox.querySelector('.confirm-id').textContent = `Ticket #${data.ticketId || ticketId} — sent`;
+            confirmBox.classList.add('is-visible');
+          }
+          return;
+        }
+
+        // If server indicates SMTP not configured, fallback to mailto
+        if (res.status === 501) {
+          if (confirmBox) {
+            confirmBox.querySelector('.confirm-id').textContent = `Ticket #${ticketId} — ready to send`;
+            confirmBox.classList.add('is-visible');
+          }
+          window.location.assign(mailto);
+          return;
+        }
+
+        // Other failures -> fallback to mailto
+        if (confirmBox) {
+          confirmBox.querySelector('.confirm-id').textContent = `Ticket #${ticketId} — ready to send`;
+          confirmBox.classList.add('is-visible');
+        }
+        window.location.assign(mailto);
+      } catch (err) {
+        // Network/CORS/etc -> fallback to mailto so the user can still send
+        if (confirmBox) {
+          confirmBox.querySelector('.confirm-id').textContent = `Ticket #${ticketId} — ready to send`;
+          confirmBox.classList.add('is-visible');
+        }
+        window.location.assign(mailto);
+      }
 
     });
   }
